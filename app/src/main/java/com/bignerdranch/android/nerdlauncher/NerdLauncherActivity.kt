@@ -9,7 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 private const val  TAG = "NerdLauncherActivity"
@@ -47,7 +49,11 @@ class NerdLauncherActivity : AppCompatActivity() {
     private class ActivityHolder(itemView: View):
             RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        private val nameTextView = itemView as TextView
+        /**
+         * Chapter 23 challenge, Change itemView to an ImageView
+         * instead of TextView
+         */
+        private val nameTextView = itemView as ImageView
         private lateinit var resolveInfo: ResolveInfo
 
         init{
@@ -57,8 +63,13 @@ class NerdLauncherActivity : AppCompatActivity() {
         fun bindActivity(resolveInfo: ResolveInfo){
             this.resolveInfo = resolveInfo
             val packageManager = itemView.context.packageManager
-            val appName = resolveInfo.loadLabel(packageManager).toString()
-            nameTextView.text = appName
+            /**
+             * Instead of loadLabel, use loadIcon here
+             * Then use setImageDrawable to set the icon image
+             * as our list item!
+             */
+            val appName = resolveInfo.loadIcon(packageManager)
+            nameTextView.setImageDrawable(appName)
         }
 
         override fun onClick(view: View){
@@ -82,7 +93,12 @@ class NerdLauncherActivity : AppCompatActivity() {
                 ActivityHolder{
             val layoutInflater = LayoutInflater.from(container.context)
             val view = layoutInflater
-                .inflate(android.R.layout.simple_list_item_1, container, false)
+                /**
+                 * chapter 23 challenge We need to create an xml layout for a list item,
+                 * that can contain an image view... I made mine JUST an image view, because
+                 * i am not too concerned with looks/style at this time.
+                 */
+                .inflate(R.layout.recycler_list_item, container, false)
             return ActivityHolder(view)
         }
 
